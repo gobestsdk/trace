@@ -5,11 +5,11 @@ import (
 )
 
 type Span struct {
-	SpanPath string        `json:"spanpath"`
+	SpanPath string        `json:"-"`
 	Step     string        `json:"step" yaml:"-"`
 	UsedTime time.Duration `json:"usedtime"`
 	Time     time.Time     `json:"-" yaml:"-"`
-	FileLine string        `json:"fileline"`
+	FileLine string        `json:"fileline,omitempty"`
 	Steps    []Span        `json:"steps,omitempty" yaml:"steps,omitempty"`
 }
 
@@ -25,7 +25,7 @@ func NewStep(name string) (step Span) {
 	return
 }
 
-func (sp *Span) NextStep(name string) {
+func (sp *Span) NextStep(name string, withfileline bool) {
 	now := time.Now()
 	var usedtime time.Duration
 	if len(sp.Steps) > 0 {
@@ -39,7 +39,9 @@ func (sp *Span) NextStep(name string) {
 		UsedTime: usedtime,
 		SpanPath: sp.SpanPath + Spandot + name,
 		Step:     name,
-		FileLine: Getskipfileline(3),
+	}
+	if withfileline {
+		step.FileLine = trace.Getskipfileline(3)
 	}
 	sp.Steps = append(sp.Steps, step)
 
