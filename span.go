@@ -41,7 +41,7 @@ func (sp *Span) NextStep(name string, withfileline bool) {
 		Step:     name,
 	}
 	if withfileline {
-		step.FileLine = trace.Getskipfileline(3)
+		step.FileLine = Getskipfileline(3)
 	}
 	sp.Steps = append(sp.Steps, step)
 
