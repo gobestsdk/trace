@@ -5,8 +5,8 @@ import (
 )
 
 type Span struct {
-	SpanPath string        `json:"-"`
 	Step     string        `json:"step" yaml:"-"`
+	Args     interface{}   `json:"args"`
 	UsedTime time.Duration `json:"usedtime"`
 	Time     time.Time     `json:"-" yaml:"-"`
 	FileLine string        `json:"fileline,omitempty"`
@@ -15,17 +15,18 @@ type Span struct {
 
 const Spandot = "➝"
 
-func NewStep(name string) (step Span) {
+func NewStep(name string, arg interface{}) (step Span) {
 	step = Span{
-		Time:     time.Now(),
-		SpanPath: name,
+		Time: time.Now(),
+
 		Step:     name,
+		Args:     arg,
 		FileLine: Getfileline(),
 	}
 	return
 }
 
-func (sp *Span) NextStep(name string, withfileline bool) {
+func (sp *Span) NextStep(name string, arg interface{}, withfileline bool) {
 	now := time.Now()
 	var usedtime time.Duration
 	if len(sp.Steps) > 0 {
@@ -37,8 +38,8 @@ func (sp *Span) NextStep(name string, withfileline bool) {
 	step := Span{
 		Time:     now,
 		UsedTime: usedtime,
-		SpanPath: sp.SpanPath + Spandot + name,
 		Step:     name,
+		Args:     arg,
 	}
 	if withfileline {
 		step.FileLine = Getskipfileline(3)
