@@ -5,7 +5,7 @@ import (
 )
 
 type Span struct {
-	Step     string        `json:"step" yaml:"-"`
+	Step     string        `json:"step" yaml:"step"`
 	Args     interface{}   `json:"args"`
 	UsedTime time.Duration `json:"usedtime"`
 	Time     time.Time     `json:"-" yaml:"-"`
